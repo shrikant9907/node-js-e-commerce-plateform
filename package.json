@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node --env-file=.env.prod app.js",
     "dev": "nodemon --env-file=.env.dev app.js",
-    "deploy": "nodemon --env-file=.env.prod app.js"
+    "deploy": "nodemon --env-file=.env.prod app.js",
+    "test": "mocha --require dotenv/config src/tests/*.test.js"
   },
   "author": "",
   "license": "ISC",
