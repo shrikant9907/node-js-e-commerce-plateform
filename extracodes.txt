@@ -1,0 +1,53 @@
+
+
+
+
+- Database name given
+
+Category: 
+- Controller, Model and Route
+- Route app.js
+- Postman (Check - Done)
+
+Location: 
+- Controller, Model and Route
+- Route app.js 
+- Postman (Check - Done)
+
+Service: 
+ - Category
+ - Location
+
+
+// 5 User 
+
+Location = Indore
+Category = Computer Repair
+Title = Computer Reparing Servcie in Indore
+
+
+ Improvement for later
+(Email - Email)
+(Phone - OTP)
+
+
+Service (Title)
+Category <- [ computer ] --- > Add New Category | save -> id -->
+Location <- ID [ location name ]
+
+"Computer Repair Service" 
+"hashID"
+"hashID"
+
+
+
+Service
+{
+   $lookup:
+     {
+       from: "Category",
+       localField: 'category',
+       foreignField: "_id,
+       as: $categoryDetails
+     }
+}
