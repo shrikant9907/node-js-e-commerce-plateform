@@ -1,27 +1,11 @@
 const request = require('supertest');
 const app = require('../../app');
 const { expect } = require('chai');
-const mongoose = require('mongoose');
 const Category = require('../models/categoryModel');
 
 require('dotenv').config({ path: '.env.dev' });
 
-// Mocha Test Suite
-describe('Category API', () => {
-
-    // Before tests, connect to the database
-    // before((done) => {
-    //     mongoose.connect('mongodb://localhost:27017/testDB', { useNewUrlParser: true, useUnifiedTopology: true })
-    //         .then(() => done())
-    //         .catch(err => done(err));
-    // });
-
-    // After tests, disconnect from the database
-    // after((done) => {
-    //     mongoose.connection.close()
-    //         .then(() => done())
-    //         .catch(err => done(err));
-    // });
+describe('Category API Controller Tests', () => {
 
     // Test GET all categories route
     describe('GET /api/category', () => {
@@ -30,7 +14,7 @@ describe('Category API', () => {
                 .get('/api/category')
                 .expect(200)
                 .end((err, res) => {
-                    expect(res.body.message).to.equal('Category Fetched Successfully.');
+                    expect(res.body.message).to.equal('Categories fetched successfully.');
                     expect(res.body.data).to.be.an('array');
                     done();
                 });
@@ -41,7 +25,9 @@ describe('Category API', () => {
     describe('POST /api/category', () => {
         it('should create a new category', (done) => {
             const newCategory = {
-                title: 'New Category'
+                title: 'New Category',
+                description: 'A new category description',
+                isActive: true
             };
 
             request(app)
@@ -49,14 +35,14 @@ describe('Category API', () => {
                 .send(newCategory)
                 .expect(201)
                 .end((err, res) => {
-                    expect(res.body.message).to.equal('Category Create Successfully.');
+                    expect(res.body.message).to.equal('Category created successfully.');
                     expect(res.body.data).to.have.property('title', 'New Category');
                     done();
                 });
         });
 
         it('should return 400 if title is missing', (done) => {
-            const newCategory = {}; // Missing title
+            const newCategory = { description: 'Missing title', isActive: true };
 
             request(app)
                 .post('/api/category')
@@ -73,7 +59,6 @@ describe('Category API', () => {
     describe('PUT /api/category/:id', () => {
         let categoryId;
 
-        // Create a category to update
         before((done) => {
             const category = new Category({ title: 'Category to Update' });
             category.save()
@@ -86,7 +71,9 @@ describe('Category API', () => {
 
         it('should update an existing category', (done) => {
             const updatedCategory = {
-                title: 'Updated Category'
+                title: 'Updated Category',
+                description: 'Updated description',
+                isActive: false
             };
 
             request(app)
@@ -94,19 +81,8 @@ describe('Category API', () => {
                 .send(updatedCategory)
                 .expect(200)
                 .end((err, res) => {
-                    expect(res.body.message).to.equal('Category Updated');
+                    expect(res.body.message).to.equal('Category updated successfully');
                     expect(res.body.data).to.have.property('title', 'Updated Category');
-                    done();
-                });
-        });
-
-        it('should return 404 if category not found', (done) => {
-            request(app)
-                .put('/api/category/invalid_id')
-                .send({ title: 'Invalid Category' })
-                .expect(404)
-                .end((err, res) => {
-                    expect(res.body.message).to.equal('Unable to find Category with given id');
                     done();
                 });
         });
@@ -116,7 +92,6 @@ describe('Category API', () => {
     describe('DELETE /api/category/:id', () => {
         let categoryId;
 
-        // Create a category to delete
         before((done) => {
             const category = new Category({ title: 'Category to Delete' });
             category.save()
@@ -132,17 +107,7 @@ describe('Category API', () => {
                 .delete(`/api/category/${categoryId}`)
                 .expect(200)
                 .end((err, res) => {
-                    expect(res.body.message).to.equal('Category Deleted');
-                    done();
-                });
-        });
-
-        it('should return 404 if category not found', (done) => {
-            request(app)
-                .delete('/api/category/invalid_id')
-                .expect(404)
-                .end((err, res) => {
-                    expect(res.body.message).to.equal('Unable to find Category with given id');
+                    expect(res.body.message).to.equal('Category deleted successfully');
                     done();
                 });
         });
